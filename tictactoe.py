@@ -1,14 +1,13 @@
 board = ["__", "__", "__", "__", "__", "__", "__", "__", "__"]
-#board_raw = ["__", "__", "__", "__", "__", "__", "__", "__", "__"]
+board_raw = ["__", "__", "__", "__", "__", "__", "__", "__", "__"]
 index = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-#new_game = ['y', 'n', 'yes', 'no']
+
 
 
 player_mark = "X"
 position = 0
 game_running = True
-#reset_board()
-#start_game()
+
 def show_board(board):
   print(board[0] + " | " + board[1] + " | " + board[2])
   print("___________")
@@ -32,18 +31,29 @@ def show_board(board):
 
 #inplace sympols
 def place_input(board):
-  global position
-  try:
-      position = int(input("Choose your position between 1 --> 9 : "))
-      if position not in index:
-          position = None
-          raise ValueError
-      else:
-          position = position
-  except ValueError:
-      print("Not valid index on board")
-  if position is not None:
-      board[position - 1] = player_mark
+    global position
+    global player_mark
+    try:
+        position = int(input("Choose your position between 1 --> 9 : "))
+        if position not in index:
+            position = None
+            raise ValueError
+        else:
+            position = position
+    except ValueError:
+        print("Not valid index on board")
+    if position is not None:
+        try:          
+            if board[position - 1] == "__":
+                    board[position - 1] = player_mark
+                  
+            else:
+                switch_player()
+                print("Position already taken, Try another one <3")
+        except:
+            pass
+      
+
 #____________________________________________________________
 def switch_player():
     global player_mark
@@ -61,6 +71,7 @@ def check_win(board):
                   print(f"Player {board[i*3]} Won !!")
      # return True
                   game_running = False
+                  return
 
        #checking column
     for i in range(3):
@@ -68,14 +79,18 @@ def check_win(board):
               print(f"Player {board[i]} Won !!")
      # return True
               game_running = False
+              return
   #checking diagonals
-          if board[0] == board[4] == board[8] and board[0] != "__":
+    if board[0] == board[4] == board[8] and board[0] != "__":
               print(f"Player {board[0]} Won !!")
+              game_running = False
+              return
       #  return True
-          if board[2] == board[4] == board[6] and board[2] != "__":
+    if board[2] == board[4] == board[6] and board[2] != "__":
               print(f"Player {board[2]} Won !!")
        # return True
               game_running = False
+              return
 #____________________________________________________________
 def check_tie(board):
     global game_running
@@ -88,7 +103,32 @@ def check_tie(board):
 #def check_place(board):
     
 #____________________________________________________________
-
+# def restart(board):
+#     global game_running
+#    # global board
+#     global board_raw
+#     if play_again():
+#         if check_win(board) or check_tie(board):
+#             board = board_raw.copy()
+#             game_running = True
+def restart(board):
+     global game_running
+     global board_raw
+     if play_again():
+         board[:] = board_raw.copy()
+         game_running = True   
+        
+#____________________________________________________________
+def play_again():
+    dec = input("Do you want to play again ? Yes or No ").lower()
+    if dec in ["yes", "y"]:
+        return True
+    elif dec in ["no", "n"]:
+        return False
+         
+    else:
+        print("Not valid option")
+        return play_again()
 
 
 
@@ -96,11 +136,21 @@ def check_tie(board):
 while game_running:
         show_board(board)
         place_input(board)
-   #     check_place(board)
         check_win(board)
         check_tie(board)
-        switch_player()
+        if game_running:
+            switch_player()
+        else:
+            if play_again():
+                restart(board)
+            else:
+                break
+     #   switch_player()
+   #     show_board(board)
+   #     play_again()
+   #     restart(board)
      #   check_win(board)
      #   check_tie(board)
-    
+        
+
 
